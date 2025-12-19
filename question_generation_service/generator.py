@@ -12,7 +12,7 @@ class QuestionGenerationService:
         user = await self.user_repo.get(user_id).model_dump()
         questions = generate_questions(prompt=user["bio"], max_questions=5,**user)
 
-        interviewee = await self.user_repo.get(interview.interviewee_id)
+        interviewee = await self.user_repo.get(Interview.interviewee_id)
         if not interviewee:
             raise ValueError("Interviewee not found")
 
