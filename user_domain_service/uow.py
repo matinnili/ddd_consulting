@@ -4,9 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import config
 from infrastructure.persistence.user_repository import SqlUserRepository
+from infrastructure.persistence.database import get_database
 
-
-class UnitOfWork(ABC):
+class UserUnitOfWork(ABC):
 
     users : UserRepository
 
@@ -33,9 +33,9 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
 )
 
 
-class SqlUnitOfWork(UnitOfWork):
+class SqlUserUnitOfWork(UserUnitOfWork):
     def __init__(self, sessionmaker: sessionmaker ):
-        self.sessionmaker = sessionmaker
+        self.sessionmaker = get_database().session_factory
 
     def __enter__(self):
         self.session = self.sessionmaker()

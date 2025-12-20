@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
 from typing import Optional
-
+from typing import List
 
 
 class User(BaseModel):
@@ -12,7 +12,7 @@ class User(BaseModel):
    
 class ChatMessage(BaseModel):
     question: str = Field(..., description="The question asked in the chat message")
-    answer: str = Field(..., description="The answer provided in the chat message")
+    answer: str = Field(..., description="The answer provided in the chat message",default="")
     model_config = ConfigDict(frozen=True)
 
 class Interview(BaseModel):
@@ -20,5 +20,7 @@ class Interview(BaseModel):
     interviewee : User = Field(..., description="The interviewee details")
     interviewer: User = Field(..., description="The interviewer details")
     content : list[ChatMessage] = Field(..., description="The list of chat messages in the interview")
+
+
 
 
