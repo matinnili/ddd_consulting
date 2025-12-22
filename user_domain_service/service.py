@@ -1,6 +1,9 @@
 from uow import SqlUnitOfWork
 from models import User
 from typing import List
+from models import ResumeDetail
+from api.user.schemas import UserUpdateProfile,UserFilter
+
 class UserService:
     def __init__(self, uow: SqlUnitOfWork):
         self.uow = uow
@@ -26,16 +29,32 @@ class UserService:
             if not user:
                 raise ValueError("User not found")
             return user
-    async def list_users(self) -> List[User]:
+    async def list_users(self, filters: UserFilter) -> List[User]:
         with self.uow as uow:
-            users = await uow.users.list()
+            if not filters:
+                filters = {}
+            else:
+                filters = filters.model_dump(exclude_none=True)
+            users = await uow.users.list(filters=filters)
             if not users:
                 raise ValueError("No users found")  
             return users
-    async def update_user(self, user: User) -> User:
+    async def update_user_profile(self, user: User, user_update_profile: UserUpdateProfile) -> User:
         with self.uow as uow:
             if not await uow.users.get(user.id):
                 raise ValueError("User not found")
-            user = await uow.users.update(user)
+            updated_data=user_update_profile.model_dump(exclude_unset=True)
+            for key, value in updated_data.items():
+                setattr(user, key, value)
+            await uow.users.merge(user.username,user)
+            
+            await uow.commit()
+            return user
+    async def update_resume_details(self, user: User, resume_details: ResumeDetail) -> User:
+        with self.uow as uow:
+            if not await uow.users.get(user.username):
+                raise ValueError("User not found")
+            user.add_resumedetails(resume_details)
+            await uow.users.merge(user.username,user)
             await uow.commit()
             return user

@@ -1,7 +1,20 @@
 from pydantic import BaseModel, Field, ConfigDict
 import uuid
 from typing import Optional
-from typing import List
+from typing import List,Literal
+
+
+
+
+
+class ResumeDetail(BaseModel):
+    age: str =Field(default="اطلاعاتی در این زمینه وجود ندارد")
+    education: List[str] = Field(default=["اطلاعاتی در این زمینه وجود ندارد"])
+    experience: List[str] = Field(default=["اطلاعاتی در این زمینه وجود ندارد"])
+    skills: List[str] = Field(default=["اطلاعاتی در این زمینه وجود ندارد"])
+    english_proficiency: str = Field(default="اطلاعاتی در این زمینه وجود ندارد", description="English proficiency level")
+    Question_Answer: Optional[str] = Field(default="اطلاعاتی در این زمینه وجود ندارد")
+    courses: List[str] = Field(default=["اطلاعاتی در این زمینه وجود ندارد"])
 
 
 class User(BaseModel):
@@ -9,12 +22,13 @@ class User(BaseModel):
     username: str = Field(..., description="The username of the user")
     first_name: str = Field(..., description="The first name of the user")
     last_name: str = Field(..., description="The last name of the user")
-    resume_details:Optional[dict] = Field(..., description="The resume details of the user",default=None)
+    resume_details:Optional[ResumeDetail] = Field(..., description="The resume details of the user",default=None)
     personality_test:Optional[dict] = Field(..., description="The personality traits of the user",default=None)
+    gender: Literal["male", "female"] = Field(..., description="The gender of the user")
 
-    def add_resume_details(self, resume_details: dict) -> None:
-        if not isinstance(resume_details, dict):
-            raise ValueError("Resume details must be a dictionary")
+    def add_resumedetails(self, resume_details: ResumeDetail) -> None:
+        if not isinstance(resume_details, ResumeDetail):
+            raise ValueError("Resume details must be a ResumeDetail object")
         if self.resume_details is None:
             self.resume_details = resume_details
         else:

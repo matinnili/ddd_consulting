@@ -20,8 +20,18 @@ class SqlUserRepository(UserRepository):
         user=session.query(User).filter_by(id=user_id)
         return user.first()
 
-    async def list(self) -> List[User]:
+    async def list(self,filters: dict =None) -> List[User]:
         # Implementation for listing all users from a SQL database
         session=self.session
-        users=session.query(User).all()
+        query=session.query(User)
+        if filters:
+            if filters.get("username"):
+                query=query.filter(User.username==filters["username"])
+            if filters.get("first_name"):
+                query=query.filter(User.first_name==filters["first_name"])
+            if filters.get("last_name"):
+                query=query.filter(User.last_name==filters["last_name"])
+            if filters.get("gender"):
+                query=query.filter(User.gender==filters["gender"])
+        users=query.all()
         return users
