@@ -25,8 +25,7 @@ class SqlInterviewRepository(InterviewRepository):
         session=self.session
         interviews=session.query(Interview).all()
         return interviews
-    async def update(self, id:str) -> None:
+    async def update(self, interview: Interview) -> None:
         session=self.session
-        interview=session.query(Interview).filter_by(id=id)
-        interview.update(interview)
+        session.merge(interview)
         session.commit()

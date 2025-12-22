@@ -1,6 +1,6 @@
 from uow import InterviewUnitOfWork
 from models import Interview
-from models import ChatMessage
+from models import ChatMessage, Chat
 from typing import List
 
 class InterviewService:
@@ -13,11 +13,11 @@ class InterviewService:
             await uow.commit()
         return interview
         
-    async def add_chat(self, interview_id: str, chat: List[ChatMessage]) -> None:
+    async def add_chat(self, interview_id: str, chat: Chat) -> None:
         with self.uow as uow:
             interview = await uow.interviews.get(interview_id)
             if not interview:
                 raise ValueError("Interview not found")
-            interview.content=chat
+            interview.add_chat(chat)
             await uow.interviews.update(interview_id)
             await uow.commit()

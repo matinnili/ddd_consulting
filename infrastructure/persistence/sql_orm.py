@@ -18,15 +18,22 @@ class UserORM(Base):
 
 
 
+class ChatORM(Base):
+    __tablename__ = "chats"
 
+    id = mapped_column(primary_key=True)
+    messages = mapped_column(JSON)
+    chat_id = mapped_column(String(50))
+    
 class InterviewORM(Base):
     __tablename__ = "interviews"
 
     id = mapped_column(primary_key=True)
     interviewee = relationship("UserORM", back_populates="interviews")
     interviewer = relationship("UserORM", back_populates="interviews")
-    chat = mapped_column(JSON)
+    chats = relationship("ChatORM", back_populates="interviews")
 
 
 user_mapper = mapper(models.User, UserORM)
 interview_mapper = mapper(models.Interview, InterviewORM)
+chat_mapper = mapper(models.Chat, ChatORM)

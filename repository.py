@@ -35,3 +35,4 @@ class UserRepository(ABC):
     @abstractmethod
     async def list(self) -> List[User]:
         pass
+
