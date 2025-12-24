@@ -15,6 +15,7 @@ class ResumeDetail(BaseModel):
     english_proficiency: str = Field(default="اطلاعاتی در این زمینه وجود ندارد", description="English proficiency level")
     Question_Answer: Optional[str] = Field(default="اطلاعاتی در این زمینه وجود ندارد")
     courses: List[str] = Field(default=["اطلاعاتی در این زمینه وجود ندارد"])
+    user : str = Field(..., description="The username")
 
 
 class User(BaseModel):

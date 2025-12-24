@@ -21,3 +21,4 @@ class InterviewService:
             interview.add_chat(chat)
             await uow.interviews.update(interview_id)
             await uow.commit()
+            
