@@ -7,7 +7,8 @@ from models import Interview, User
 class InterviewRepository(ABC):
 
 
-
+    def __init__(self, session):
+        self.seen=set()
     @abstractmethod
     async def add(self, interview: Interview) -> None:
         pass

@@ -8,23 +8,32 @@ from sqlalchemy.orm import sessionmaker
 class InterviewUnitOfWork(ABC):
     interviews : InterviewRepository
 
-    @abstractmethod
+    
     def __enter__(self):
         return self
 
-    @abstractmethod
+    
     def __exit__(self, *args):
         self.rollback()
 
-    @abstractmethod
+    def collect_new_events(self) -> List[Event]:
+        events=[]
+        for item in self.seen:
+            events.append(item)
+        while events:
+            yield events.pop(0)
+
     async def commit(self) -> None:
-        pass
+        self._commit()
+
     @abstractmethod
     async def rollback(self) -> None:
         pass
+    @abstractmethod
+    def _commit(self) -> None:
+        pass
 
-
-    class SqlInterviewUnitOfWork(InterviewUnitOfWork):
+class SqlInterviewUnitOfWork(InterviewUnitOfWork):
 
         def __init__(self, sessionmaker: sessionmaker):
             self.sessionmaker = get_database().session_factory

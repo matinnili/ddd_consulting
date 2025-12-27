@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 import uuid
 from typing import Optional
 from typing import List,Literal
-
+from events import Event, InterviewCompleteMessage, InterviewCreateMessage
 
 
 
@@ -68,9 +68,10 @@ class Interview(BaseModel):
     interviewer: User = Field(..., description="The interviewer details")
     questions: list[str] = Field(..., description="The list of questions asked in the interview")
     content : Optional[Chat] = Field(..., description="The chat details for the interview",default=None)
-    
+    events: List[Event] = Field(..., description="The list of events for the interview",default=[])
     def add_chat(self, chat: Chat) -> None:
         if self.content is None:
             self.content = chat
+            self.events.append(InterviewCreateMessage(topic="interview_created",interviewee_username=self.interviewee.username,interviewer_username=self.interviewer.username))
         else:
             raise ValueError("Chat already exists")

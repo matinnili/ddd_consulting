@@ -7,18 +7,23 @@ class SqlInterviewRepository(InterviewRepository):
 
     def __init__(self, session):
         self.session = session
-
+        super().__init__()
     async def add(self, interview: Interview) -> None:
         # Implementation for adding an interview to a SQL database
         session=self.session
         session.add(interview)
+        self.seen.add(interview)
         session.commit()
 
     async def get(self, item_id: str) -> Optional[Interview]:
         # Implementation for retrieving an interview by ID from a SQL database
         session=self.session
-        interview=session.query(Interview).filter_by(id=item_id)
-        return interview.first()
+        interview=session.query(Interview).filter_by(id=item_id).first()
+        if interview:
+            self.seen.add(interview)
+            return interview
+        else:
+            return None
 
     async def list(self) -> List[Interview]:
         # Implementation for listing all interviews from a SQL database
@@ -28,4 +33,5 @@ class SqlInterviewRepository(InterviewRepository):
     async def update(self, interview: Interview) -> None:
         session=self.session
         session.merge(interview)
+        self.seen.add(interview)
         session.commit()
