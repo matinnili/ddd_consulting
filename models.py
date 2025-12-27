@@ -6,7 +6,6 @@ from typing import List,Literal
 
 
 
-class AuthenticatedUser(BaseModel):
 
     
 
