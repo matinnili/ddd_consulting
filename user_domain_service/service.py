@@ -1,11 +1,11 @@
-from uow import SqlUnitOfWork
+from uow import SqlUnitOfWork, AbstractUnitOfWork
 from models import User
 from typing import List
 from models import ResumeDetail
 from api.user.schemas import UserUpdateProfile,UserFilter
 
 class UserService:
-    def __init__(self, uow: SqlUnitOfWork):
+    def __init__(self, uow: AbstractUnitOfWork):
         self.uow = uow
 
     async def login(self, username: str, password: str) -> User:

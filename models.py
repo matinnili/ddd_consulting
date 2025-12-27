@@ -6,6 +6,9 @@ from typing import List,Literal
 
 
 
+class AuthenticatedUser(BaseModel):
+
+    
 
 class ResumeDetail(BaseModel):
     age: str =Field(default="اطلاعاتی در این زمینه وجود ندارد")
